@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sync gTimeLog to Jira</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="./main.js" deferer></script>
+        <style>
+            #toggleConfig::after {
+                content: '';
+                display: inline-block;
+                height: 1cap;
+                aspect-ratio: 1;
+                margin-inline-start: .5rem;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 15 15'%3E%3Cpath fill='%23cad5e2' fill-rule='evenodd' d='M3.135 6.158a.5.5 0 01.707-.023L7.5 9.565l3.658-3.43a.5.5 0 01.684.73l-4 3.75a.5.5 0 01-.684 0l-4-3.75a.5.5 0 01-.023-.707z' clip-rule='evenodd'/%3E%3C/svg%3E") no-repeat center / cover;
+                transition: transform .2s ease;
+            }
+            #toggleConfig[data-visible="true"]::after { transform: rotate(-180deg); }
+            #toggleConfig[data-visible="false"] + #data { display: none; }
+            #toggleConfig[data-visible="true"] + #data { display: flex; }
+
+            #date {
+                background: url("data:image/svg+xml,%3Csvg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.5 1C4.77614 1 5 1.22386 5 1.5V2H10V1.5C10 1.22386 10.2239 1 10.5 1C10.7761 1 11 1.22386 11 1.5V2H12.5C13.3284 2 14 2.67157 14 3.5V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V3.5C1 2.67157 1.67157 2 2.5 2H4V1.5C4 1.22386 4.22386 1 4.5 1ZM10 3V3.5C10 3.77614 10.2239 4 10.5 4C10.7761 4 11 3.77614 11 3.5V3H12.5C12.7761 3 13 3.22386 13 3.5V5H2V3.5C2 3.22386 2.22386 3 2.5 3H4V3.5C4 3.77614 4.22386 4 4.5 4C4.77614 4 5 3.77614 5 3.5V3H10ZM2 6V12.5C2 12.7761 2.22386 13 2.5 13H12.5C12.7761 13 13 12.7761 13 12.5V6H2ZM7 7.5C7 7.22386 7.22386 7 7.5 7C7.77614 7 8 7.22386 8 7.5C8 7.77614 7.77614 8 7.5 8C7.22386 8 7 7.77614 7 7.5ZM9.5 7C9.22386 7 9 7.22386 9 7.5C9 7.77614 9.22386 8 9.5 8C9.77614 8 10 7.77614 10 7.5C10 7.22386 9.77614 7 9.5 7ZM11 7.5C11 7.22386 11.2239 7 11.5 7C11.7761 7 12 7.22386 12 7.5C12 7.77614 11.7761 8 11.5 8C11.2239 8 11 7.77614 11 7.5ZM11.5 9C11.2239 9 11 9.22386 11 9.5C11 9.77614 11.2239 10 11.5 10C11.7761 10 12 9.77614 12 9.5C12 9.22386 11.7761 9 11.5 9ZM9 9.5C9 9.22386 9.22386 9 9.5 9C9.77614 9 10 9.22386 10 9.5C10 9.77614 9.77614 10 9.5 10C9.22386 10 9 9.77614 9 9.5ZM7.5 9C7.22386 9 7 9.22386 7 9.5C7 9.77614 7.22386 10 7.5 10C7.77614 10 8 9.77614 8 9.5C8 9.22386 7.77614 9 7.5 9ZM5 9.5C5 9.22386 5.22386 9 5.5 9C5.77614 9 6 9.22386 6 9.5C6 9.77614 5.77614 10 5.5 10C5.22386 10 5 9.77614 5 9.5ZM3.5 9C3.22386 9 3 9.22386 3 9.5C3 9.77614 3.22386 10 3.5 10C3.77614 10 4 9.77614 4 9.5C4 9.22386 3.77614 9 3.5 9ZM3 11.5C3 11.2239 3.22386 11 3.5 11C3.77614 11 4 11.2239 4 11.5C4 11.7761 3.77614 12 3.5 12C3.22386 12 3 11.7761 3 11.5ZM5.5 11C5.22386 11 5 11.2239 5 11.5C5 11.7761 5.22386 12 5.5 12C5.77614 12 6 11.7761 6 11.5C6 11.2239 5.77614 11 5.5 11ZM7 11.5C7 11.2239 7.22386 11 7.5 11C7.77614 11 8 11.2239 8 11.5C8 11.7761 7.77614 12 7.5 12C7.22386 12 7 11.7761 7 11.5ZM9.5 11C9.22386 11 9 11.2239 9 11.5C9 11.7761 9.22386 12 9.5 12C9.77614 12 10 11.7761 10 11.5C10 11.2239 9.77614 11 9.5 11Z' fill='%23cad5e2' fill-rule='evenodd' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E") no-repeat calc(100% - .25rem) center / 20px;
+            }
+        </style>
+    </head>
+    <body class="bg-slate-950 text-slate-300">
+        <h1 class="text-4xl text-center font-bold py-4">Jira.GTL</h1>
+        <p class="text-center text-slate-400 uppercase text-xs font-bold tracking-wide">Upload your daily gTimeLog log to Jira<br>[ Only Grouped logs supported ]</p>
+        <div id="message" class="fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-3 rounded-md border-1 font-bold z-3 hidden"></div>
+        <main class="flex flex-row gap-6 w-full p-12">
+            <section class="w-1/2">
+                <button id="toggleConfig" class="cursor-pointer text-slate-300 mb-4" data-visible="false" onClick="toggleConfig()">Show config</button>
+                <div id="data" class="flex-col gap-4 w-full mb-4">
+                    <input id="domain" type="text" name="domain" placeholder="The Jira domain" class="p-4 border-b-1 border-color-slate-300 w-full focus:outline-hidden hover:bg-slate-900 focus:bg-slate-900 transition-colors transition-3" autocomplete="off">
+                    <input id="email" type="email" name="email" placeholder="Your email" class="p-4 border-b-1 border-color-slate-300 w-full focus:outline-hidden hover:bg-slate-900 focus:bg-slate-900 transition-colors transition-3" autocomplete="off">
+                    <input id="api" type="password" name="api" placeholder="Your Jira API Key" class="p-4 border-b-1 border-color-slate-300 w-full focus:outline-hidden hover:bg-slate-900 focus:bg-slate-900 transition-colors transition-3" autocomplete="off">
+                    <div class="input-group flex flex-col gap-3 w-full">
+                        <input id="schema" type="text" name="schema" class="p-4 w-full border-b-1 border-color-slate-300 cursor-not-allowed tracking-wide" placeholder="Set your schema with buttons bellow" readonly>
+                        <div class="schema-btn-group flex flex-row gap-2">
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="cat">Category</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="id">Issue ID</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="desc">Description</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema=":">:</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="-">-</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="/">/</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="*">*</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800 ml-auto" data-schema=" ">Space</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="-1">Undo</button>
+                        </div>
+                    </div>
+                    <div class="input-group multipleId-group flex-col gap-3 w-full hidden">
+                        <input id="multipleId" type="text" name="schema" class="p-4 w-full border-b-1 border-color-slate-300 cursor-not-allowed tracking-wide" placeholder="Join ID with..." readonly>
+                        <div class="multipleId-btn-group flex flex-row gap-2">
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema=":">:</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="-">-</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="/">/</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800" data-schema="*">*</button>
+                            <button class="bg-slate-900 rounded-2 py-1 px-2 cursor-pointer active:bg-slate-800 ml-auto" data-schema="-1">Undo</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-row gap-2">
+                        <input type="checkbox" name="omitWorkAndRest" id="omitWorkAndRest" checked="true"> <label for="omitWorkAndRest" class="text-slate-300 cursor-pointer">Omit Work and Rest (**)</label>
+                    </div>
+                    <button class="saveData p-4 border-1 border-color-slate-300 cursor-pointer hover:bg-slate-900 transition-colors transition-3" onClick="handleSaveData()">Save my data in local storage</button>
+                </div>
+                <div id="log">
+                    Select log date: <input id="date" type="date" name="date" class="p-1 cursor-pointer">
+                    <textarea id="log" name="log" cols="30" rows="10" placeholder="Copy and paste your gTimeLog log here" class="p-6 mt-2 border-b-1 border-color-slate-300 w-full resize-none hover:bg-slate-900 focus:outline-hidden focus:bg-slate-900 transition-colors transition-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-slate-800 [&::-webkit-scrollbar-thumb]:bg-slate-600"></textarea>
+                </div>
+           </section>
+
+            <section class="w-1/2">
+                <div id="previewData" class="mb-12">
+                    <table class="w-full"></table>
+                </div>
+                <button id="sendToJira" onClick="sendToJira()" class="block px-16 py-3 w-full border-1 border-dashed border-slate-600 bg-slate-800 text-slate-300 font-bold cursor-pointer transition-colors hover:text-slate-200 hover:bg-slate-700 hidden">Load to Jira</button>
+            </section>
+        </main>
+    </body>
+</html>

@@ -298,7 +298,7 @@ const sendToJira = () => {
 
     const table = document.querySelector('#previewData table'),
         btn = document.querySelector('button#sendToJira'),
-        textarea = document.querySelector('textearea#log');
+        textarea = document.querySelector('textarea#log');
 
     table.innerHTML = ''
     textarea.value = ''

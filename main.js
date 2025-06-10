@@ -84,7 +84,7 @@ const handleSaveData = () => {
 
     const isInStorage = localStorage.getItem(storageName) ? true : false;
     const alertText = isInStorage ? 'Data saved correctly.' : 'Could not save data.',
-        alertStyle = isInStorage ? ui.messageSuccessStyle : ui.messageErrorStyle;
+        alertStyle = isInStorage ? messageSuccessStyle : messageErrorStyle;
 
     showMessage(alertText, alertStyle)
 }
@@ -201,7 +201,7 @@ const handleLogPaste = e => {
             });
         });
 
-    ui.generateTable();
+    generateTable();
 };
 
 const sendToJira = () => {
@@ -227,15 +227,15 @@ const sendToJira = () => {
         .then(res => res.json())
         .then(data => {
             if (data.error) {
-                ui.showMessage('Ha ocurrido un error al procesar los datos', ui.messageErrorStyle)
+                showMessage('Ha ocurrido un error al procesar los datos', messageErrorStyle)
                 console.error("Error desde PHP:", data);
             } else {
-                ui.showMessage('El log se ha enviado correctamente', ui.messageSuccessStyle)
+                showMessage('El log se ha enviado correctamente', messageSuccessStyle)
                 console.log("Enviado a Jira:", data);
              }
         })
         .catch(err => {
-            ui.showMessage('Ha ocurrido un error al contactar con el servidor', ui.messageErrorStyle)
+            showMessage('Ha ocurrido un error al contactar con el servidor', messageErrorStyle)
             console.error("Error al enviar:", err);
         });
 
